@@ -7,5 +7,50 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(ggplot2)
+library(tidyverse)
+library(janitor)
+library(patchwork)
+```
+
+```{r}
+#read in data
+gas_tax <- read_csv(here("data", "HW3_data.csv")) %>% 
+  clean_names()
+```
+
+```{r}
+#find regression low income
+ggplot(data = gas_tax, aes(x = price_dollars,
+                              y = q_low_gallons)) +
+  geom_line(colour = "green") +
+  labs(x = "Number of Gallons($)",
+       y = "Price ($/Gallon)",
+       title = "Low Income Price Per Gallon Gasoline") +
+  theme_minimal() +
+  geom_smooth(method = "lm",
+              color = "black",
+              size = 0.5,
+              fill = "gray10",
+              alpha = 0.5) +
+  ggpubr::stat_regline_equation(label.x = 1, label.y = 0)
+```
+
+```{r}
+#find regression high income
+ggplot(data = gas_tax, aes(x = price_dollars,
+                              y = q_high_gallons)) +
+  geom_line(colour = "green") +
+  labs(x = "Number of Gallons($)",
+       y = "Price ($/Gallon)",
+       title = "High Income Price Per Gallon Gasoline") +
+  theme_minimal() +
+  geom_smooth(method = "lm",
+              color = "black",
+              size = 0.5,
+              fill = "gray10",
+              alpha = 0.5) +
+  ggpubr::stat_regline_equation(label.x = 1, label.y = 0)
 ```
 
