@@ -12,6 +12,7 @@ library(ggplot2)
 library(tidyverse)
 library(janitor)
 library(patchwork)
+options(scipen = 999)
 ```
 
 ```{r}
@@ -22,8 +23,8 @@ gas_tax <- read_csv(here("data", "HW3_data.csv")) %>%
 
 ```{r}
 #find regression low income
-ggplot(data = gas_tax, aes(x = price_dollars,
-                              y = q_low_gallons)) +
+ggplot(data = gas_tax, aes(x = q_low_gallons,
+                              y = price_dollars)) +
   geom_line(colour = "green") +
   labs(x = "Number of Gallons($)",
        y = "Price ($/Gallon)",
@@ -36,11 +37,17 @@ ggplot(data = gas_tax, aes(x = price_dollars,
               alpha = 0.5) +
   ggpubr::stat_regline_equation(label.x = 1, label.y = 0)
 ```
+```{r}
+#estimate linear model
+model_low_demand <- lm(price_dollars~q_low_gallons, data=gas_tax)
+model_high_demand<- lm(price_dollars~q_high_gallons, data=gas_tax)
+model_low_demand$coefficients[[2]]
+```
 
 ```{r}
 #find regression high income
-ggplot(data = gas_tax, aes(x = price_dollars,
-                              y = q_high_gallons)) +
+ggplot(data = gas_tax, aes(x = q_high_gallons,
+                              y = price_dollars)) +
   geom_line(colour = "green") +
   labs(x = "Number of Gallons($)",
        y = "Price ($/Gallon)",
@@ -53,4 +60,72 @@ ggplot(data = gas_tax, aes(x = price_dollars,
               alpha = 0.5) +
   ggpubr::stat_regline_equation(label.x = 1, label.y = 0)
 ```
+
+```{r}
+#add estimated curve to plot --> already done with ggplot, method="lm"
+al<-model_low_demand$coefficients[[1]]
+bl<-model_low_demand$coefficients[[2]]
+ah<-model_high_demand$coefficients[[1]]
+bh<-model_high_demand$coefficients[[2]]
+price_low_fitted<- a + b*gas_tax$q_low_gallons
+```
+
+
+```{r}
+#functions, same as saying y = x^2
+function_low <- function(x){
+  y <- x^2
+  return(y)
+}
+function_low(3)
+function_low(3)+4
+```
+
+```{r}
+#p(Q)
+inverse_demand_low <- function(q,model){
+  p<- model$coefficients[[1]]+model$coefficients[[2]]*q
+  return(p)
+}
+
+#inverse P(Q) to get Q(P)
+demand<- function(p,model){
+  q<- (p - model$coefficient[[1]])/model$coefficient[[2]]
+  return(q)
+}
+
+demand(inverse_demand_low(0,model_low_demand),model_low_demand)
+inverse_demand_low(0,model_low_demand)
+```
+
+```{r}
+#Consumer Surplus
+cs_p<-function(p,model){
+  q<-demand(p,model)
+  cs<- 0.5*(model$coefficients[[1]]-p)*q
+  return(cs)
+}
+
+cs_q<- function(q,model){
+  p <- inverse_demand(q,model)
+  cs<- 0.5*(model$coefficients[[1]]-p)*q
+  return(cs)
+}
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
