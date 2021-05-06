@@ -67,7 +67,7 @@ al<-model_low_demand$coefficients[[1]]
 bl<-model_low_demand$coefficients[[2]]
 ah<-model_high_demand$coefficients[[1]]
 bh<-model_high_demand$coefficients[[2]]
-price_low_fitted<- a + b*gas_tax$q_low_gallons
+price_low_fitted<- al + bl*gas_tax$q_low_gallons
 ```
 
 
@@ -96,6 +96,9 @@ demand<- function(p,model){
 
 demand(inverse_demand_low(0,model_low_demand),model_low_demand)
 inverse_demand_low(0,model_low_demand)
+demand_0_h<- demand(0,model_high_demand)
+demand_0_l<- demand(0,model_low_demand)
+demand_0_h+demand_0_l
 ```
 
 ```{r}
