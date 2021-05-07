@@ -102,6 +102,11 @@ demand_0_h+demand_0_l
 ```
 
 ```{r}
+low_q_star
+```
+
+
+```{r}
 #Consumer Surplus
 cs_p<-function(p,model){
   q<-demand(p,model)
